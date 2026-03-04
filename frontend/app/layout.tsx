@@ -25,7 +25,42 @@ export const metadata: Metadata = {
     'القانون العرفي',
     'اللجنة الوطنية للقانون الدولي الإنساني',
     'سالم المسهلي',
+    'معهد دونان',
+    'تدريب القانون الدولي',
+    'استشارات قانونية',
+    'القانون الإنساني الدولي',
+    'حماية المدنيين في النزاعات المسلحة',
+    'الخليج العربي',
+    'سلطنة عمان',
+    'Dunant Institute',
+    'International Humanitarian Law',
+    'IHL training',
+    'Geneva Conventions',
+    'law of armed conflict',
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ar_OM',
+    title: 'معهد دونان للاستشارات والتدريب | القانون الدولي الإنساني',
+    description: 'معهد دونان للاستشارات والتدريب - مؤسسة رائدة في مجال القانون الدولي الإنساني في منطقة الخليج العربي. تدريب واستشارات وبناء قدرات في القانون الإنساني واتفاقيات جنيف.',
+    siteName: 'معهد دونان للاستشارات والتدريب',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'معهد دونان للاستشارات والتدريب | القانون الدولي الإنساني',
+    description: 'معهد دونان للاستشارات والتدريب - مؤسسة رائدة في مجال القانون الدولي الإنساني في منطقة الخليج العربي.',
+  },
   icons: {
     icon: [
       {
