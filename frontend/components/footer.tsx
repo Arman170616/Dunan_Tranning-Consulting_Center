@@ -1,4 +1,5 @@
-import { Heart, Phone, Mail, MessageCircle } from "lucide-react"
+import Link from "next/link"
+import { Heart, Mail, MessageCircle, Map } from "lucide-react"
 
 const quickLinks = [
   { label: "الرئيسية", href: "#hero" },
@@ -14,23 +15,6 @@ const resources = [
   { label: "تواصل معنا", href: "#contact" },
 ]
 
-const sitemap = [
-  { label: "الرئيسية", href: "#hero" },
-  { label: "كلمة المدير العام", href: "#director" },
-  { label: "الرؤية والرسالة", href: "#vision" },
-  { label: "الأهداف", href: "#goals" },
-  { label: "الهيكل التنظيمي", href: "#structure" },
-  { label: "هيئة التدريب", href: "#trainers" },
-  { label: "المحاضرات والدورات", href: "#services" },
-  { label: "الأنشطة والفعاليات", href: "#activities" },
-  { label: "الفيديوهات والصور", href: "#media" },
-  { label: "الكتب والبحوث", href: "#library" },
-  { label: "الاتفاقيات المكتوبة", href: "#conventions" },
-  { label: "القانون العرفي", href: "#customary-law" },
-  { label: "السوابق القضائية", href: "#case-law" },
-  { label: "تواصل معنا", href: "#contact" },
-]
-
 export default function Footer() {
   return (
     <footer className="relative border-t border-border/30 overflow-hidden">
@@ -38,7 +22,7 @@ export default function Footer() {
       <div className="absolute inset-0 geometric-pattern opacity-5" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -102,10 +86,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Resources + Sitemap button */}
           <div>
             <h4 className="text-sm font-bold text-foreground mb-5">المصادر</h4>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 mb-8">
               {resources.map((link, i) => (
                 <li key={i}>
                   <a
@@ -117,24 +101,15 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
 
-          {/* Sitemap */}
-          <div>
-            <h4 className="text-sm font-bold text-foreground mb-5">خريطة الموقع</h4>
-            <ul className="flex flex-col gap-3">
-              {sitemap.map((link, i) => (
-                <li key={i}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group"
-                  >
-                    <span className="inline-block w-1 h-1 rounded-full bg-primary/40 group-hover:bg-primary transition-colors shrink-0" />
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {/* Sitemap button */}
+            <Link
+              href="/sitemap-page"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/30 bg-primary/5 text-sm font-semibold text-primary hover:bg-primary/10 hover:border-primary/50 transition-all"
+            >
+              <Map className="h-4 w-4" />
+              خريطة الموقع
+            </Link>
           </div>
         </div>
 
