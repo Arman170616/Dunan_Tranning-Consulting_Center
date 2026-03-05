@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Calendar, MapPin, ArrowLeft } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
+import { Calendar, MapPin, ArrowLeft, X } from "lucide-react"
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
@@ -69,6 +69,7 @@ function formatDate(dateStr: string) {
 
 export default function ActivitiesSection() {
   const [activities, setActivities] = useState<Activity[]>(DEFAULT_ACTIVITIES)
+  const [selected, setSelected] = useState<Activity | null>(null)
 
   useEffect(() => {
     fetch(`${API}/api/activities/`)
@@ -76,6 +77,19 @@ export default function ActivitiesSection() {
       .then((data: Activity[]) => { if (data.length) setActivities(data) })
       .catch(() => {})
   }, [])
+
+  const close = useCallback(() => setSelected(null), [])
+
+  useEffect(() => {
+    if (!selected) return
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") close() }
+    window.addEventListener("keydown", handler)
+    document.body.style.overflow = "hidden"
+    return () => {
+      window.removeEventListener("keydown", handler)
+      document.body.style.overflow = ""
+    }
+  }, [selected, close])
 
   return (
     <section id="activities" className="relative py-24 lg:py-32 overflow-hidden animated-bg">
@@ -100,12 +114,25 @@ export default function ActivitiesSection() {
           {activities.map((act, i) => (
             <div
               key={act.id ?? i}
-              className="glass-card rounded-3xl p-7 lg:p-8 group hover:scale-[1.02] hover:border-primary/25 transition-all duration-500 relative overflow-hidden"
+              className="glass-card rounded-3xl group hover:scale-[1.02] hover:border-primary/25 transition-all duration-500 relative overflow-hidden"
             >
-              {/* Decorative top line */}
-              <div className={`absolute top-0 right-0 left-0 h-0.5 ${
-                act.tag_color === "teal" ? "bg-linear-to-l from-transparent via-(--teal)/50 to-transparent" : "bg-linear-to-l from-transparent via-primary/50 to-transparent"
-              }`} />
+              {/* Activity Image */}
+              {act.image_url ? (
+                <div className="relative h-44 w-full overflow-hidden">
+                  <img
+                    src={act.image_url}
+                    alt={act.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-card/80 to-transparent" />
+                </div>
+              ) : (
+                <div className={`h-1 w-full ${
+                  act.tag_color === "teal" ? "bg-linear-to-l from-transparent via-(--teal)/50 to-transparent" : "bg-linear-to-l from-transparent via-primary/50 to-transparent"
+                }`} />
+              )}
+
+              <div className="p-7 lg:p-8">
 
               {/* Tag */}
               <div className="mb-5">
@@ -135,14 +162,102 @@ export default function ActivitiesSection() {
                 </span>
               </div>
 
-              <button className="flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all group/btn">
+              <button
+                onClick={() => setSelected(act)}
+                className="flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all group/btn"
+              >
                 التفاصيل
                 <ArrowLeft className="h-4 w-4 transition-transform group-hover/btn:-translate-x-1" />
               </button>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* ── Activity Details Modal ── */}
+      {selected && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={close}
+            aria-hidden="true"
+          />
+
+          {/* Modal Card */}
+          <div className="relative w-full max-w-lg sm:max-w-xl bg-card border border-border/40 rounded-3xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Image or accent line */}
+            {selected.image_url ? (
+              <div className="relative h-52 w-full overflow-hidden">
+                <img
+                  src={selected.image_url}
+                  alt={selected.title}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-card/70 to-transparent" />
+              </div>
+            ) : (
+              <div className={`h-1 w-full ${
+                selected.tag_color === "teal"
+                  ? "bg-linear-to-l from-transparent via-(--teal)/60 to-transparent"
+                  : "bg-linear-to-l from-transparent via-primary/60 to-transparent"
+              }`} />
+            )}
+
+            <div className="p-6 sm:p-8">
+              {/* Close button */}
+              <button
+                onClick={close}
+                className="absolute top-5 left-5 flex h-8 w-8 items-center justify-center rounded-full bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="إغلاق"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              {/* Tag */}
+              <div className="mb-4">
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${
+                  selected.tag_color === "teal"
+                    ? "bg-(--teal)/10 text-(--teal) border-(--teal)/20"
+                    : "bg-primary/10 text-primary border-primary/20"
+                }`}>
+                  {selected.tag}
+                </span>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl sm:text-2xl font-extrabold text-foreground mb-4 leading-snug">
+                {selected.title}
+              </h3>
+
+              {/* Meta */}
+              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
+                <span className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary shrink-0" />
+                  {formatDate(selected.date)}
+                </span>
+                <span className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary shrink-0" />
+                  {selected.location}
+                </span>
+              </div>
+
+              {/* Divider */}
+              <div className="h-px bg-border/40 mb-6" />
+
+              {/* Description */}
+              <p className="text-sm text-muted-foreground leading-loose">
+                {selected.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

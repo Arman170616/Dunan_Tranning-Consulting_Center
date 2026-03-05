@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { BookOpen, FileText, Film, Image as ImageIcon } from "lucide-react"
+import Link from "next/link"
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
@@ -102,31 +103,39 @@ export default function LibrarySection() {
 
           {/* Category Cards Grid */}
           <div className="lg:col-span-3 grid sm:grid-cols-2 gap-5">
-            {categories.map((cat, i) => (
-              <div
-                key={i}
-                id={cat.id}
-                className="glass-card rounded-2xl p-6 group hover:scale-[1.03] hover:border-primary/30 transition-all duration-500 cursor-pointer relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-linear-to-br from-primary/0 to-primary/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative flex items-start gap-4">
-                  <div className="flex h-13 w-13 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 group-hover:bg-primary/15 group-hover:scale-110 transition-all duration-300 shrink-0">
-                    <cat.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
-                        {cat.title}
-                      </h4>
-                      <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/15">
-                        {cat.count}
-                      </span>
+            {categories.map((cat, i) => {
+              const inner = (
+                <>
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/0 to-primary/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative flex items-start gap-4">
+                    <div className="flex h-13 w-13 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 group-hover:bg-primary/15 group-hover:scale-110 transition-all duration-300 shrink-0">
+                      <cat.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{cat.desc}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                          {cat.title}
+                        </h4>
+                        <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/15">
+                          {cat.count}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{cat.desc}</p>
+                    </div>
                   </div>
+                </>
+              )
+              const cls = "glass-card rounded-2xl p-6 group hover:scale-[1.03] hover:border-primary/30 transition-all duration-500 cursor-pointer relative overflow-hidden"
+              return cat.id === "videos" ? (
+                <Link key={i} href="/library/videos" id={cat.id} className={cls}>
+                  {inner}
+                </Link>
+              ) : (
+                <div key={i} id={cat.id} className={cls}>
+                  {inner}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
